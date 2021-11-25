@@ -1,0 +1,3 @@
+[submodule "bitwuzla"]
+	path = bitwuzla
+	url = https://github.com/bitwuzla/bitwuzla
