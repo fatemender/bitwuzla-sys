@@ -1,4 +1,5 @@
 [![crates.io](https://img.shields.io/crates/v/bitwuzla-sys.svg)](https://crates.io/crates/bitwuzla-sys)
+[![docs.rs](https://img.shields.io/docsrs/bitwuzla-sys)](https://docs.rs/bitwuzla-sys)
 
 # bitwuzla-sys
 
