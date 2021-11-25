@@ -9,5 +9,8 @@ fn main() {
         }
     }
 
-    println!("cargo:rustc-link-lib=bitwuzla");
+    #[cfg(not(feature = "vendor-cadical"))]
+    {
+        println!("cargo:rustc-link-lib=bitwuzla");
+    }
 }
