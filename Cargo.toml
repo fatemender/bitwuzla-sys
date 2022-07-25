@@ -12,7 +12,7 @@ links                                   = "bitwuzla"
 name                                    = "bitwuzla-sys"
 readme                                  = "README.md"
 repository                              = "https://github.com/fatemender/bitwuzla-sys"
-version                                 = "0.1.1"
+version                                 = "0.2.0"
 
 [features]
 vendor-cadical                          = ["copy_dir"]
