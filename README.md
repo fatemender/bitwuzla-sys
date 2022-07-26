@@ -16,7 +16,7 @@ to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-bitwuzla-sys = "0.1.1"
+bitwuzla-sys = "0.2"
 ```
 
 ### Using vendored static `bitwuzla` library
@@ -26,7 +26,7 @@ with the `vendor-cadical` feature enabled:
 
 ```toml
 [dependencies]
-bitwuzla-sys = { version = "0.1.1", features = ["vendor-cadical"] }
+bitwuzla-sys = { version = "0.2", features = ["vendor-cadical"] }
 ```
 
 Enabling `vendor-cadical` will automatically build a static `bitwuzla` library
