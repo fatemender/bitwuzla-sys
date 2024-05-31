@@ -1,3 +1,4 @@
 [submodule "bitwuzla"]
 	path = bitwuzla
 	url = https://github.com/rassel1976/bitwuzla
+	branch = fix-build
