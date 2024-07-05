@@ -22,62 +22,38 @@ impl BitwuzlaBuild {
             copy_dir(&self.src_dir, &self.out_dir).expect("failed to copy Bitwuzla sources to `OUT_DIR`");
         }
 
-        if !self.out_dir.join("deps/install/lib/libcadical.a").exists() {
-            self.run_command(
-                "Download and build CaDiCaL",
-                Command::new("/usr/bin/env")
-                    .arg("bash")
-                    .arg(self.out_dir.join("contrib/setup-cadical.sh"))
-                    .current_dir(&self.out_dir),
-            );
-        }
-
-        if !self.out_dir.join("deps/install/lib/libbtor2parser.a").exists() {
-            self.run_command(
-                "Download and build BTOR2Tools",
-                Command::new("/usr/bin/env")
-                    .arg("bash")
-                    .arg(self.out_dir.join("contrib/setup-btor2tools.sh"))
-                    .current_dir(&self.out_dir),
-            );
-        }
-
-        if !self.out_dir.join("deps/symfpu").exists() {
-            self.run_command(
-                "Download and build SymFPU",
-                Command::new("/usr/bin/env")
-                    .arg("bash")
-                    .arg(self.out_dir.join("contrib/setup-symfpu.sh"))
-                    .current_dir(&self.out_dir),
-            );
-        }
-
-        println!("cargo:rustc-link-search=native={}", self.out_dir.join("deps/install/lib").display());
-        println!("cargo:rustc-link-lib=static=cadical");
-        println!("cargo:rustc-link-lib=static=btor2parser");
-
         self
     }
 
     pub fn build(self) -> Self {
         self.run_command(
             "Configure Bitwuzla",
-            Command::new("/bin/sh")
-                .arg(self.out_dir.join("configure.sh"))
+            Command::new("/usr/bin/env")
+                .arg("python3")
+                .arg(self.out_dir.join("configure.py"))
                 .current_dir(&self.out_dir),
         );
 
         self.run_command(
             "Build Bitwuzla",
-            Command::new("make")
-                .arg("-j")
+            Command::new("meson")
+                .arg("compile")
                 .current_dir(self.out_dir.join("build")),
         );
 
-        println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/lib").display());
-        println!("cargo:rustc-link-lib=static=bitwuzla");
-        println!("cargo:rustc-link-lib=stdc++");
-        println!("cargo:rustc-link-lib=gmp");
+        println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src").display());
+        println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src/lib").display());
+        println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/subprojects/gmp-6.3.0/build/.libs").display());
+        println!("cargo:rustc-link-arg=-Wl,-Bstatic");
+        println!("cargo:rustc-link-arg=-Wl,--start-group");
+        println!("cargo:rustc-link-arg=-lbitwuzla");
+        println!("cargo:rustc-link-arg=-lbitwuzlabb");
+        println!("cargo:rustc-link-arg=-lbitwuzlabv");
+        println!("cargo:rustc-link-arg=-lbitwuzlals");
+        println!("cargo:rustc-link-arg=-Wl,--end-group");
+        println!("cargo:rustc-link-arg=-Wl,-Bdynamic");
+        println!("cargo:rustc-link-arg=-Wl,-lstdc++");
+        println!("cargo:rustc-link-arg=-Wl,-lgmp");
 
         self
     }
