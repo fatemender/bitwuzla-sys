@@ -41,19 +41,19 @@ impl BitwuzlaBuild {
                 .current_dir(self.out_dir.join("build")),
         );
 
-        self.run_command(
-            "Merge Bitwuzla libraries",
-            Command::new("/bin/sh")
-                .arg(self.src_dir.parent().unwrap().join("build-vendor-merge.sh"))
-                .current_dir(self.out_dir.join("build").join("src")),
-        );
-
         println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src").display());
         println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src/lib").display());
         println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/subprojects/gmp-6.3.0/build/.libs").display());
-        println!("cargo:rustc-link-lib=static:-whole-archive=bitwuzla-merged");
-        println!("cargo:rustc-link-lib=stdc++");
-        println!("cargo:rustc-link-lib=gmp");
+        println!("cargo:rustc-link-arg=-Wl,-Bstatic");
+        println!("cargo:rustc-link-arg=-Wl,--start-group");
+        println!("cargo:rustc-link-arg=-lbitwuzla");
+        println!("cargo:rustc-link-arg=-lbitwuzlabb");
+        println!("cargo:rustc-link-arg=-lbitwuzlabv");
+        println!("cargo:rustc-link-arg=-lbitwuzlals");
+        println!("cargo:rustc-link-arg=-Wl,--end-group");
+        println!("cargo:rustc-link-arg=-Wl,-Bdynamic");
+        println!("cargo:rustc-link-arg=-Wl,-lstdc++");
+        println!("cargo:rustc-link-arg=-Wl,-lgmp");
 
         self
     }
