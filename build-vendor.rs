@@ -26,6 +26,16 @@ impl BitwuzlaBuild {
     }
 
     pub fn build(self) -> Self {
+        const GMP_VERSION: &str = "6.1";
+        const GMP_LIB: &str = "gmp";
+        // Ensure GMP is available on the system, _before_ configure.py. Otherwise we'll
+        // get a confusing error message. However, don't emit the link commands here,
+        // because we want to link GMP later.
+        pkg_config::Config::new()
+            .cargo_metadata(false)
+            .atleast_version(GMP_VERSION)
+            .probe(GMP_LIB).unwrap();
+
         self.run_command(
             "Configure Bitwuzla",
             Command::new("/usr/bin/env")
@@ -43,7 +53,6 @@ impl BitwuzlaBuild {
 
         println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src").display());
         println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src/lib").display());
-        println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/subprojects/gmp-6.3.0/build/.libs").display());
         println!("cargo:rustc-link-arg=-Wl,-Bstatic");
         println!("cargo:rustc-link-arg=-Wl,--start-group");
         println!("cargo:rustc-link-arg=-lbitwuzla");
@@ -53,7 +62,11 @@ impl BitwuzlaBuild {
         println!("cargo:rustc-link-arg=-Wl,--end-group");
         println!("cargo:rustc-link-arg=-Wl,-Bdynamic");
         println!("cargo:rustc-link-arg=-Wl,-lstdc++");
-        println!("cargo:rustc-link-arg=-Wl,-lgmp");
+        // Link to pkg-config GMP
+        pkg_config::Config::new()
+            .atleast_version(GMP_VERSION)
+            .probe(GMP_LIB).unwrap();
+
 
         self
     }

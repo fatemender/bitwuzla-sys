@@ -15,10 +15,11 @@ repository                              = "https://github.com/fatemender/bitwuzl
 version                                 = "0.5.0"
 
 [features]
-vendor-cadical                          = ["copy_dir"]
+vendor-cadical                          = ["copy_dir", "pkg-config"]
 
 [dependencies]
 libc                                    = "0.2"
 
 [build-dependencies]
 copy_dir                                = { version = "0.1", optional = true }
+pkg-config                              = { version = "0.3", optional = true }
