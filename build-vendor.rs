@@ -53,20 +53,30 @@ impl BitwuzlaBuild {
 
         println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src").display());
         println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src/lib").display());
-        println!("cargo:rustc-link-arg=-Wl,-Bstatic");
-        println!("cargo:rustc-link-arg=-Wl,--start-group");
-        println!("cargo:rustc-link-arg=-lbitwuzla");
-        println!("cargo:rustc-link-arg=-lbitwuzlabb");
-        println!("cargo:rustc-link-arg=-lbitwuzlabv");
-        println!("cargo:rustc-link-arg=-lbitwuzlals");
-        println!("cargo:rustc-link-arg=-Wl,--end-group");
-        println!("cargo:rustc-link-arg=-Wl,-Bdynamic");
-        println!("cargo:rustc-link-arg=-Wl,-lstdc++");
+
+        println!("cargo:rustc-link-lib=static=bitwuzla");
+        println!("cargo:rustc-link-lib=static=bitwuzlabb");
+        println!("cargo:rustc-link-lib=static=bitwuzlals");
+        println!("cargo:rustc-link-lib=static=bitwuzlabv");
         // Link to pkg-config GMP
         pkg_config::Config::new()
             .atleast_version(GMP_VERSION)
             .probe(GMP_LIB).unwrap();
 
+
+        // Handle C++ standard library selection, following policy from `cc` crate.
+        let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+        match &target_os[..] {
+            "macos" | "freebsd" | "openbsd" | "netbsd" => {
+                println!("cargo:rustc-link-lib=c++");
+            }
+            "android" => {
+                println!("cargo:rustc-link-lib=c++_shared");
+            }
+            _ => {
+                println!("cargo:rustc-link-lib=stdc++");
+            }
+        };
 
         self
     }
