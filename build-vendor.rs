@@ -26,6 +26,16 @@ impl BitwuzlaBuild {
     }
 
     pub fn build(self) -> Self {
+        const GMP_VERSION: &str = "6.1";
+        const GMP_LIB: &str = "gmp";
+        // Ensure GMP is available on the system, _before_ configure.py. Otherwise we'll
+        // get a confusing error message. However, don't emit the link commands here,
+        // because we want to link GMP later.
+        pkg_config::Config::new()
+            .cargo_metadata(false)
+            .atleast_version(GMP_VERSION)
+            .probe(GMP_LIB).unwrap();
+
         self.run_command(
             "Configure Bitwuzla",
             Command::new("/usr/bin/env")
@@ -41,19 +51,32 @@ impl BitwuzlaBuild {
                 .current_dir(self.out_dir.join("build")),
         );
 
-        self.run_command(
-            "Merge Bitwuzla libraries",
-            Command::new("/bin/sh")
-                .arg(self.src_dir.parent().unwrap().join("build-vendor-merge.sh"))
-                .current_dir(self.out_dir.join("build").join("src")),
-        );
-
         println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src").display());
         println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/src/lib").display());
-        println!("cargo:rustc-link-search=native={}", self.out_dir.join("build/subprojects/gmp-6.3.0/build/.libs").display());
-        println!("cargo:rustc-link-lib=static:-whole-archive=bitwuzla-merged");
-        println!("cargo:rustc-link-lib=stdc++");
-        println!("cargo:rustc-link-lib=gmp");
+
+        println!("cargo:rustc-link-lib=static=bitwuzla");
+        println!("cargo:rustc-link-lib=static=bitwuzlabb");
+        println!("cargo:rustc-link-lib=static=bitwuzlals");
+        println!("cargo:rustc-link-lib=static=bitwuzlabv");
+        // Link to pkg-config GMP
+        pkg_config::Config::new()
+            .atleast_version(GMP_VERSION)
+            .probe(GMP_LIB).unwrap();
+
+
+        // Handle C++ standard library selection, following policy from `cc` crate.
+        let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+        match &target_os[..] {
+            "macos" | "freebsd" | "openbsd" | "netbsd" => {
+                println!("cargo:rustc-link-lib=c++");
+            }
+            "android" => {
+                println!("cargo:rustc-link-lib=c++_shared");
+            }
+            _ => {
+                println!("cargo:rustc-link-lib=stdc++");
+            }
+        };
 
         self
     }
