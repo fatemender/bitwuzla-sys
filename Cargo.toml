@@ -12,6 +12,7 @@ links                                   = "bitwuzla"
 name                                    = "bitwuzla-sys"
 readme                                  = "README.md"
 repository                              = "https://github.com/fatemender/bitwuzla-sys"
+rust-version                            = "1.82"
 version                                 = "0.7.0"
 
 [features]
