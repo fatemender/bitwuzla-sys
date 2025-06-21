@@ -124,20 +124,20 @@ pub const BITWUZLA_OPT_VERBOSITY: BitwuzlaOption = 5;
 pub const BITWUZLA_OPT_TIME_LIMIT_PER: BitwuzlaOption = 6;
 pub const BITWUZLA_OPT_MEMORY_LIMIT: BitwuzlaOption = 7;
 pub const BITWUZLA_OPT_NTHREADS: BitwuzlaOption = 8;
-pub const BITWUZLA_OPT_RELEVANT_TERMS: BitwuzlaOption = 9;
-pub const BITWUZLA_OPT_BV_SOLVER: BitwuzlaOption = 10;
-pub const BITWUZLA_OPT_REWRITE_LEVEL: BitwuzlaOption = 11;
-pub const BITWUZLA_OPT_SAT_SOLVER: BitwuzlaOption = 12;
-pub const BITWUZLA_OPT_PROP_CONST_BITS: BitwuzlaOption = 13;
-pub const BITWUZLA_OPT_PROP_INFER_INEQ_BOUNDS: BitwuzlaOption = 14;
-pub const BITWUZLA_OPT_PROP_NPROPS: BitwuzlaOption = 15;
-pub const BITWUZLA_OPT_PROP_NUPDATES: BitwuzlaOption = 16;
-pub const BITWUZLA_OPT_PROP_OPT_LT_CONCAT_SEXT: BitwuzlaOption = 17;
-pub const BITWUZLA_OPT_PROP_PATH_SEL: BitwuzlaOption = 18;
-pub const BITWUZLA_OPT_PROP_PROB_RANDOM_INPUT: BitwuzlaOption = 19;
-pub const BITWUZLA_OPT_PROP_PROB_USE_INV_VALUE: BitwuzlaOption = 20;
-pub const BITWUZLA_OPT_PROP_SEXT: BitwuzlaOption = 21;
-pub const BITWUZLA_OPT_PROP_NORMALIZE: BitwuzlaOption = 22;
+pub const BITWUZLA_OPT_BV_SOLVER: BitwuzlaOption = 9;
+pub const BITWUZLA_OPT_REWRITE_LEVEL: BitwuzlaOption = 10;
+pub const BITWUZLA_OPT_SAT_SOLVER: BitwuzlaOption = 11;
+pub const BITWUZLA_OPT_WRITE_AIGER: BitwuzlaOption = 12;
+pub const BITWUZLA_OPT_WRITE_CNF: BitwuzlaOption = 13;
+pub const BITWUZLA_OPT_PROP_CONST_BITS: BitwuzlaOption = 14;
+pub const BITWUZLA_OPT_PROP_INFER_INEQ_BOUNDS: BitwuzlaOption = 15;
+pub const BITWUZLA_OPT_PROP_NPROPS: BitwuzlaOption = 16;
+pub const BITWUZLA_OPT_PROP_NUPDATES: BitwuzlaOption = 17;
+pub const BITWUZLA_OPT_PROP_OPT_LT_CONCAT_SEXT: BitwuzlaOption = 18;
+pub const BITWUZLA_OPT_PROP_PATH_SEL: BitwuzlaOption = 19;
+pub const BITWUZLA_OPT_PROP_PROB_RANDOM_INPUT: BitwuzlaOption = 20;
+pub const BITWUZLA_OPT_PROP_PROB_USE_INV_VALUE: BitwuzlaOption = 21;
+pub const BITWUZLA_OPT_PROP_SEXT: BitwuzlaOption = 22;
 pub const BITWUZLA_OPT_ABSTRACTION: BitwuzlaOption = 23;
 pub const BITWUZLA_OPT_ABSTRACTION_BV_SIZE: BitwuzlaOption = 24;
 pub const BITWUZLA_OPT_ABSTRACTION_EAGER_REFINE: BitwuzlaOption = 25;
@@ -188,8 +188,11 @@ pub struct BitwuzlaOptionInfo {
     pub lng: *const ::std::os::raw::c_char,
     pub description: *const ::std::os::raw::c_char,
     pub is_numeric: bool,
+    pub is_mode: bool,
+    pub is_string: bool,
     pub numeric: BitwuzlaOptionInfo_NumericValue,
     pub mode: BitwuzlaOptionInfo_ModeValue,
+    pub string: BitwuzlaOptionInfo_StringValue,
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -237,9 +240,26 @@ const _: () = {
     ["Offset of field: BitwuzlaOptionInfo_ModeValue::modes"]
         [::std::mem::offset_of!(BitwuzlaOptionInfo_ModeValue, modes) - 24usize];
 };
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BitwuzlaOptionInfo_StringValue {
+    pub cur: *const ::std::os::raw::c_char,
+    pub dflt: *const ::std::os::raw::c_char,
+}
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of BitwuzlaOptionInfo"][::std::mem::size_of::<BitwuzlaOptionInfo>() - 104usize];
+    ["Size of BitwuzlaOptionInfo_StringValue"]
+        [::std::mem::size_of::<BitwuzlaOptionInfo_StringValue>() - 16usize];
+    ["Alignment of BitwuzlaOptionInfo_StringValue"]
+        [::std::mem::align_of::<BitwuzlaOptionInfo_StringValue>() - 8usize];
+    ["Offset of field: BitwuzlaOptionInfo_StringValue::cur"]
+        [::std::mem::offset_of!(BitwuzlaOptionInfo_StringValue, cur) - 0usize];
+    ["Offset of field: BitwuzlaOptionInfo_StringValue::dflt"]
+        [::std::mem::offset_of!(BitwuzlaOptionInfo_StringValue, dflt) - 8usize];
+};
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of BitwuzlaOptionInfo"][::std::mem::size_of::<BitwuzlaOptionInfo>() - 120usize];
     ["Alignment of BitwuzlaOptionInfo"][::std::mem::align_of::<BitwuzlaOptionInfo>() - 8usize];
     ["Offset of field: BitwuzlaOptionInfo::opt"]
         [::std::mem::offset_of!(BitwuzlaOptionInfo, opt) - 0usize];
@@ -251,10 +271,16 @@ const _: () = {
         [::std::mem::offset_of!(BitwuzlaOptionInfo, description) - 24usize];
     ["Offset of field: BitwuzlaOptionInfo::is_numeric"]
         [::std::mem::offset_of!(BitwuzlaOptionInfo, is_numeric) - 32usize];
+    ["Offset of field: BitwuzlaOptionInfo::is_mode"]
+        [::std::mem::offset_of!(BitwuzlaOptionInfo, is_mode) - 33usize];
+    ["Offset of field: BitwuzlaOptionInfo::is_string"]
+        [::std::mem::offset_of!(BitwuzlaOptionInfo, is_string) - 34usize];
     ["Offset of field: BitwuzlaOptionInfo::numeric"]
         [::std::mem::offset_of!(BitwuzlaOptionInfo, numeric) - 40usize];
     ["Offset of field: BitwuzlaOptionInfo::mode"]
         [::std::mem::offset_of!(BitwuzlaOptionInfo, mode) - 72usize];
+    ["Offset of field: BitwuzlaOptionInfo::string"]
+        [::std::mem::offset_of!(BitwuzlaOptionInfo, string) - 104usize];
 };
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -283,6 +309,10 @@ unsafe extern "C" {
     pub fn bitwuzla_option_is_mode(options: *mut BitwuzlaOptions, option: BitwuzlaOption) -> bool;
 }
 unsafe extern "C" {
+    pub fn bitwuzla_option_is_string(options: *mut BitwuzlaOptions, option: BitwuzlaOption)
+        -> bool;
+}
+unsafe extern "C" {
     pub fn bitwuzla_set_option(options: *mut BitwuzlaOptions, option: BitwuzlaOption, val: u64);
 }
 unsafe extern "C" {
@@ -293,10 +323,23 @@ unsafe extern "C" {
     );
 }
 unsafe extern "C" {
+    pub fn bitwuzla_set_option_string(
+        options: *mut BitwuzlaOptions,
+        option: BitwuzlaOption,
+        val: *const ::std::os::raw::c_char,
+    );
+}
+unsafe extern "C" {
     pub fn bitwuzla_get_option(options: *mut BitwuzlaOptions, option: BitwuzlaOption) -> u64;
 }
 unsafe extern "C" {
     pub fn bitwuzla_get_option_mode(
+        options: *mut BitwuzlaOptions,
+        option: BitwuzlaOption,
+    ) -> *const ::std::os::raw::c_char;
+}
+unsafe extern "C" {
+    pub fn bitwuzla_get_option_string(
         options: *mut BitwuzlaOptions,
         option: BitwuzlaOption,
     ) -> *const ::std::os::raw::c_char;
@@ -565,6 +608,11 @@ unsafe extern "C" {
     pub fn bitwuzla_term_to_string_fmt(
         term: BitwuzlaTerm,
         base: u8,
+    ) -> *const ::std::os::raw::c_char;
+}
+unsafe extern "C" {
+    pub fn bitwuzla_term_fp_value_to_real_string(
+        term: BitwuzlaTerm,
     ) -> *const ::std::os::raw::c_char;
 }
 unsafe extern "C" {
