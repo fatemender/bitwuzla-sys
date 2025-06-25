@@ -4,7 +4,7 @@
 # bitwuzla-sys
 
 This Rust crate provides low-level bindings for the [Bitwuzla] SMT solver,
-version 0.7.0.
+version 0.8.0.
 
 [Bitwuzla]: https://bitwuzla.github.io/
 
@@ -17,7 +17,7 @@ to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-bitwuzla-sys = "0.7"
+bitwuzla-sys = "0.8"
 ```
 
 ### Using vendored static `bitwuzla` library
@@ -27,7 +27,7 @@ with the `vendor-cadical` feature enabled:
 
 ```toml
 [dependencies]
-bitwuzla-sys = { version = "0.7", features = ["vendor-cadical"] }
+bitwuzla-sys = { version = "0.8", features = ["vendor-cadical"] }
 ```
 
 Enabling `vendor-cadical` will automatically build a static `bitwuzla` library
